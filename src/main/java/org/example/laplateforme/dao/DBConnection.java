@@ -12,7 +12,7 @@ public class DBConnection {
     private static final String PORT = "5432";
     private static final String USER = "groupe";
     private static final String PASSWORD = "MotDePasseComplexe123!";
-    private static final String URL = "jdbc:postgresql://" + HOST + ":" + PORT + "/" + DB_NAME;
+    private static final String URL = "jdbc:postgresql://dpg-d1ierler433s73agd6tg-a.frankfurt-postgres.render.com:5432/plateformetracker" + HOST + ":" + PORT + "/" + DB_NAME;
 
     // Méthode pour établir une connexion
     public static Connection getConnection() throws SQLException {
