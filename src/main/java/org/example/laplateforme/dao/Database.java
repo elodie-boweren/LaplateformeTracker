@@ -1,11 +1,11 @@
-package org.example.laplateforme;
+package org.example.laplateforme.dao;
 
 import java.sql.*;
 
 public class Database {
-    private static final String DB_NAME = "plateformetracker";
-    private static final String HOST = "dpg-d1ierler433s73agd6tg-a.frankfurt-postgres.render.com";
-    private static final String PORT = "5432";
+//    private static final String DB_NAME = "plateformetracker";
+//    private static final String HOST = "dpg-d1ierler433s73agd6tg-a.frankfurt-postgres.render.com";
+//    private static final String PORT = "5432";
     private static final String USER = "plateformetracker_user";
     private static final String PASSWORD = "5zhAoSpXbD9mTQT3MrggX3pd4YCGiT7Z";
 
