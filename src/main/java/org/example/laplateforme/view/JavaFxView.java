@@ -1,4 +1,4 @@
-package view.
+package org.example.laplateforme.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -17,7 +17,7 @@ public class JavaFxView extends Application {
             BorderPane root = new BorderPane();
 
             // Créer la vue du menu principal
-            view.MainMenuView mainMenu = new view.MainMenuView();
+            MainMenuView mainMenu = new MainMenuView();
             root.setCenter(mainMenu);
 
             // Configuration de la scène

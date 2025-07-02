@@ -1,4 +1,4 @@
-package view;
+package org.example.laplateforme.view;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
