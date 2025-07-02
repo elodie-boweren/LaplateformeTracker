@@ -3,11 +3,12 @@ package org.example.laplateforme;
 import java.sql.*;
 
 public class Database {
-    private static final String DB_NAME = "PlateformeTracker";
-    private static final String HOST = "localhost";
+    // Group database created for the project
+    private static final String DB_NAME = "projetdb";
+    private static final String HOST = "10.10.194.244";
     private static final String PORT = "5432";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "Ecole2024!";
+    private static final String USER = "groupe";
+    private static final String PASSWORD = "MotDePasseComplexe123!";
 
     public static void main(String[] args) {
         String adminUrl = "jdbc:postgresql://" + HOST + ":" + PORT + "/postgres";
@@ -46,7 +47,7 @@ public class Database {
                 """;
 
             createTableStmt.executeUpdate(createTableSql);
-            System.out.println("✅ Table Student prête à l’emploi.");
+            System.out.println("✅ Student table ready.");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,7 +55,9 @@ public class Database {
     }
 
     private static boolean databaseExists(Connection conn) throws SQLException {
+        // Search through postgres databases
         String checkQuery = "SELECT 1 FROM pg_database WHERE datname = ?";
+        // Prepared Statement to prevent SQL injections
         try (PreparedStatement ps = conn.prepareStatement(checkQuery)) {
             ps.setString(1, DB_NAME);
             try (ResultSet rs = ps.executeQuery()) {
