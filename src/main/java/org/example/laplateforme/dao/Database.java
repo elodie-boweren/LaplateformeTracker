@@ -1,4 +1,4 @@
-package org.example.laplateforme;
+package org.example.laplateforme.dao;
 
 import java.sql.*;
 

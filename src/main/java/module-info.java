@@ -6,4 +6,6 @@ module org.example.laplateforme {
 
     opens org.example.laplateforme to javafx.fxml;
     exports org.example.laplateforme;
+    exports org.example.laplateforme.dao;
+    opens org.example.laplateforme.dao to javafx.fxml;
 }
