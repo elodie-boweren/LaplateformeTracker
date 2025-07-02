@@ -3,9 +3,6 @@ package org.example.laplateforme.dao;
 import java.sql.*;
 
 public class Database {
-//    private static final String DB_NAME = "plateformetracker";
-//    private static final String HOST = "dpg-d1ierler433s73agd6tg-a.frankfurt-postgres.render.com";
-//    private static final String PORT = "5432";
     private static final String USER = "plateformetracker_user";
     private static final String PASSWORD = "5zhAoSpXbD9mTQT3MrggX3pd4YCGiT7Z";
     private static final String DB_URL  = "jdbc:postgresql://dpg-d1ierler433s73agd6tg-a.frankfurt-postgres.render.com:5432/plateformetracker";
@@ -35,6 +32,10 @@ public class Database {
                 System.err.println("❌ Failure in disconnecting from the database: " + e.getMessage());
             }
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 
     public boolean createStudentTable() {
@@ -94,4 +95,7 @@ public class Database {
             return false;
         }
     }
+
 }
+
+

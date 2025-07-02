@@ -1,6 +1,7 @@
 package org.example.laplateforme;
 
 import org.example.laplateforme.dao.Database;
+import org.example.laplateforme.dao.UserDAO;
 
 public class Main {
     public static void main(String[] args) {
