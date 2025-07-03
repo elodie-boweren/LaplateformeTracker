@@ -18,13 +18,6 @@ public class Student {
         this.grade = grade;
     }
 
-    public Student(String firstName, String lastName, int age, String grade) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.grade = grade;
-    }
-
     public int getId() {
         return id;
     }

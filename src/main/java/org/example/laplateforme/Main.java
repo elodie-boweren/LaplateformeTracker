@@ -9,6 +9,7 @@ public class Main {
         Database database = new Database();
 
         // Connect to database
+        database.connectDb();
         if (!database.connectDb()) {
             return;
         }

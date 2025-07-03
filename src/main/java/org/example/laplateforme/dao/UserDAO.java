@@ -1,11 +1,12 @@
 package org.example.laplateforme.dao;
+import org.example.laplateforme.model.User;
 
 import java.sql.*;
 
 public class UserDAO {
     private Database database;
 
-    public UserDAO(Database database) {
+    public UserDAO() {
         this.database = database;
     }
 
@@ -131,6 +132,22 @@ public class UserDAO {
         }
 
         return false;
+    }
+
+    public boolean save(User user) {
+        Connection conn = database.getConnection();
+        String selectSql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setString(3, user.getPassword());
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'enregistrement de l'utilisateur : " + e.getMessage());
+            return false;
+        }
     }
 
     public boolean updatePassword(String username, String newPasswordHash) {
