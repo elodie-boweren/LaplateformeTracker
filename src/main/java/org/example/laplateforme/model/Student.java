@@ -1,5 +1,7 @@
 package org.example.laplateforme.model;
 
+import javafx.beans.property.*;
+
 public class Student {
     private int id;
     private String firstName;

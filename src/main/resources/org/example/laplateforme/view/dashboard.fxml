@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.laplateforme.controller.DashboardController">
+
+    <top>
+        <VBox spacing="10" padding="10">
+            <Label text="Student Dashboard" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+            <!-- Filters -->
+            <HBox spacing="10">
+                <TextField fx:id="filterFirstName" promptText="Filter by first name..." />
+                <TextField fx:id="filterLastName" promptText="Filter by last name..." />
+                <TextField fx:id="filterAge" promptText="Filter by age..." />
+                <TextField fx:id="filterGrade" promptText="Filter by grade..." />
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TableView fx:id="studentTable">
+            <columns>
+                <TableColumn fx:id="nameColumn" text="First Name" prefWidth="120"/>
+                <TableColumn fx:id="surnameColumn" text="Last Name" prefWidth="120"/>
+                <TableColumn fx:id="ageColumn" text="Age" prefWidth="80"/>
+                <TableColumn fx:id="gradeColumn" text="Grade" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" alignment="center" padding="10">
+            <Button fx:id="addStudentButton" text="➕ Add Student" />
+            <Button fx:id="editStudentButton" text="✏️ Edit Student" />
+        </HBox>
+    </bottom>
+</BorderPane>

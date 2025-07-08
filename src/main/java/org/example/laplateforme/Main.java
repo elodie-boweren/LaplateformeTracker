@@ -1,24 +1,23 @@
 package org.example.laplateforme;
 
-import org.example.laplateforme.dao.Database;
-import org.example.laplateforme.dao.UserDAO;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Main {
-    public static void main(String[] args) {
-        // Create object Database
-        Database database = new Database();
-
-        // Connect to database
-        database.connectDb();
-        if (!database.connectDb()) {
-            return;
-        }
-    // Create or check tables Student and User
-        database.createStudentTable();
-        database.createUserTable();
-
-
-        // Close connection to database
-        database.closeConnection();
-        }
+public class Main extends Application {
+    @Override
+    public void start(Stage stage) throws Exception {
+        // Chargement du FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/laplateforme/view/auth.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("LaPlateforme - Login");
+        stage.setScene(scene);
+        stage.show();
     }
+
+    public static void main(String[] args) {
+        launch();
+    }
+}

@@ -7,58 +7,29 @@ public class UserDAO {
     private Database database;
 
     public UserDAO() {
-        this.database = database;
+        this.database = new Database();
+        this.database.connectDb(); // Connexion à la base
     }
 
     // Create new user
-    public boolean insertUser(String username, String email, String passwordHash, String role) {
+    public boolean insertUser(String email, String passwordHash, String role) {
         Connection conn = database.getConnection();
         if (conn == null) {
             return false;
         }
 
-        String insertSql = """
-            
-                INSERT INTO Users (username, email, password_hash, role) 
-            VALUES (?, ?, ?, ?)
-            """;
+        String insertSql = "INSERT INTO Users (email, password_hash, role) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, email);
-            pstmt.setString(3, passwordHash);
-            pstmt.setString(4, role);
+            pstmt.setString(1, email);
+            pstmt.setString(2, passwordHash);
+            pstmt.setString(3, role);
 
             return pstmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.err.println("❌ SQL error when inserting new user: " + e.getMessage());
             return false;
-        }
-    }
-
-    public ResultSet getUserByUsername(String username) {
-        Connection conn = database.getConnection();
-        if (conn == null) {
-            return null;
-        }
-
-        String selectSql =
-                """
-            SELECT id, username, email, password_hash, role, created_at,
-                last_login, is_active
-            FROM 
-                      WHERE username = ?
-            """;
-
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(selectSql);
-            pstmt.setString(1, username);
-            return pstmt.executeQuery();
-
-        } catch (SQLException e) {
-            System.err.println("❌ SQL error when getting user: " + e.getMessage());
-            return null;
         }
     }
 
@@ -69,10 +40,9 @@ public class UserDAO {
         }
 
         String selectSql = """
-            SELECT id, username, email, password_hash, role,
-                created_at,
-                last_login, 
-                         FROM Users 
+            SELECT id, email, password_hash, role,
+                created_at, last_login, is_active
+            FROM Users 
             WHERE email = ?
             """;
 
@@ -82,33 +52,44 @@ public class UserDAO {
             return pstmt.executeQuery();
 
         } catch (SQLException e) {
-            System.err.println("❌ SQL error when searching user by email: " + e.
-                    getMessage());
+            System.err.println("❌ SQL error when searching user by email: " + e.getMessage());
             return null;
         }
     }
 
-    public boolean existsByUsername(String username) {
-        Connection conn = database.getConnection();
-        if (conn == null) {
-            return false;
+    public User findByEmail(String email) {
+        ResultSet rs = getUserByEmail(email);
+
+        if (rs == null) {
+            return null;
         }
 
-        String selectSql = "SELECT COUNT(*) FROM Users WHERE username = ?";
+        try {
+            if (rs.next()) {
+                // Créer un objet User avec les propriétés de base
+                String userEmail = rs.getString("email");
+                String passwordHash = rs.getString("password_hash");
+                String role = rs.getString("role");
 
-        try (PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
-            pstmt.setString(1, username);
+                // Utiliser le constructeur de User (adaptez selon votre constructeur)
+                User user = new User(userEmail, passwordHash, role);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
+                // Si votre User a un setId, décommentez cette ligne
+                // user.setId(rs.getInt("id"));
+
+                return user;
             }
         } catch (SQLException e) {
-            System.err.println("❌ SQL error when checking existence of username: " + e.getMessage());
+            System.err.println("❌ SQL error when converting ResultSet to User: " + e.getMessage());
+        } finally {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                System.err.println("❌ Error closing ResultSet: " + e.getMessage());
+            }
         }
 
-        return false;
+        return null;
     }
 
     public boolean existsByEmail(String email) {
@@ -136,12 +117,16 @@ public class UserDAO {
 
     public boolean save(User user) {
         Connection conn = database.getConnection();
-        String selectSql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
+        if (conn == null) {
+            return false;
+        }
 
-        try (PreparedStatement pstmt = conn.prepareStatement(selectSql)) {
-            pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getEmail());
-            pstmt.setString(3, user.getPassword());
+        String insertSql = "INSERT INTO Users (email, password_hash, role) VALUES (?, ?, ?)";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
+            pstmt.setString(1, user.getEmail());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getRole());
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -150,17 +135,17 @@ public class UserDAO {
         }
     }
 
-    public boolean updatePassword(String username, String newPasswordHash) {
+    public boolean updatePassword(String email, String newPasswordHash) {
         Connection conn = database.getConnection();
         if (conn == null) {
             return false;
         }
 
-        String updateSql = "UPDATE Users SET password_hash = ? WHERE username = ?";
+        String updateSql = "UPDATE Users SET password_hash = ? WHERE email = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
             pstmt.setString(1, newPasswordHash);
-            pstmt.setString(2, username);
+            pstmt.setString(2, email);
             return pstmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -169,16 +154,16 @@ public class UserDAO {
         }
     }
 
-    public boolean deleteUser(String username) {
+    public boolean deleteUser(String email) {
         Connection conn = database.getConnection();
         if (conn == null) {
             return false;
         }
 
-        String deleteSql = "DELETE FROM Users WHERE username = ?";
+        String deleteSql = "DELETE FROM Users WHERE email = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
-            pstmt.setString(1, username);
+            pstmt.setString(1, email);
             return pstmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -194,7 +179,7 @@ public class UserDAO {
         }
 
         String selectSql = """
-            SELECT id, username, email, role, created_at, last_login, is_active
+            SELECT id, email, role, created_at, last_login, is_active
             FROM Users 
             ORDER BY created_at DESC
             """;
@@ -208,5 +193,4 @@ public class UserDAO {
             return null;
         }
     }
-
 }

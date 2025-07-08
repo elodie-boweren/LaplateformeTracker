@@ -4,9 +4,13 @@ module org.example.laplateforme {
     requires java.sql;
     requires jBCrypt;
 
-
     opens org.example.laplateforme to javafx.fxml;
-    exports org.example.laplateforme;
-    exports org.example.laplateforme.dao;
+    opens org.example.laplateforme.controller to javafx.fxml;
     opens org.example.laplateforme.dao to javafx.fxml;
+    opens org.example.laplateforme.model to javafx.base;
+
+    exports org.example.laplateforme;
+    exports org.example.laplateforme.controller;
+    exports org.example.laplateforme.dao;
+    exports org.example.laplateforme.model;
 }

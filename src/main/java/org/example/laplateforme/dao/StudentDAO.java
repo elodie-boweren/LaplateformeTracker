@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDAO {
-    private Database database;
+    private static Database database;
 
     public StudentDAO() {
-        this.database = database;
+        this.database = new Database();
+        this.database.connectDb(); // Connexion à la base
     }
 
     //Ajouter un étudiant
@@ -17,7 +18,7 @@ public class StudentDAO {
         String sql = "INSERT INTO Student (firstName, lastName, age, grade) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = database.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, student.getFirstName());
             stmt.setString(2, student.getLastName());
@@ -27,7 +28,7 @@ public class StudentDAO {
             stmt.executeUpdate();
             System.out.println("Student added successfully");
         } catch (SQLException e) {
-            System.err.println("Error");
+            System.err.println("Error adding student: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -45,7 +46,7 @@ public class StudentDAO {
             stmt.setString(4, student.getGrade());
             stmt.setInt(5, student.getId());
 
-            int rowsUpdated = stmt.executeUpdate();  // ✅ cette variable existe
+            int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("✅ Étudiant mis à jour.");
             } else {
@@ -53,11 +54,10 @@ public class StudentDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Erreur lors de la mise à jour.");
+            System.err.println("❌ Erreur lors de la mise à jour: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     // Rechercher un étudiant par ID
     public Student getStudentById(int id) {
@@ -79,7 +79,7 @@ public class StudentDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Erreur lors de la récupération.");
+            System.err.println("❌ Erreur lors de la récupération: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -87,7 +87,7 @@ public class StudentDAO {
     }
 
     // Afficher tous les étudiants
-    public List<Student> getAllStudents() {
+    public static List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
         String sql = "SELECT * FROM Student ORDER BY id";
 
@@ -107,7 +107,7 @@ public class StudentDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'affichage.");
+            System.err.println("Erreur lors de l'affichage: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -131,9 +131,8 @@ public class StudentDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Erreur lors de la suppression.");
+            System.err.println("❌ Erreur lors de la suppression: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 }
