@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDAO {
-    private static Database database;
+    private Database database;
 
     public StudentDAO() {
         this.database = new Database();
@@ -87,7 +87,7 @@ public class StudentDAO {
     }
 
     // Afficher tous les étudiants
-    public static List<Student> getAllStudents() {
+    public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
         String sql = "SELECT * FROM Student ORDER BY id";
 

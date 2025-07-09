@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Label;
+import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
 import org.example.laplateforme.model.User;
 import org.mindrot.jbcrypt.BCrypt;
@@ -28,7 +29,6 @@ public class AuthController {
     @FXML
     private Label errorLabel;
 
-    // Nouveau champ pour le message d'erreur de la page de login
     @FXML
     private Label errorMessage;
 
@@ -38,42 +38,65 @@ public class AuthController {
     @FXML
     private Button loginButton;
 
+    @FXML
+    private Hyperlink registerLink;
+
     private final UserDAO userDAO = new UserDAO();
+    private final Database database = new Database();
+
+    // Variable pour gérer le mode (login ou register)
+    private boolean isRegisterMode = false;
 
     @FXML
     public void initialize() {
+        // Initialiser la base de données et créer les tables
+        if (database.connectDb()) {
+            database.createUserTable();
+            database.createStudentTable();
+        }
+
         if (backButton != null) {
             backButton.setOnAction(e -> goBackToMainMenu());
+        }
+
+        // Gérer le lien d'inscription
+        if (registerLink != null) {
+            registerLink.setOnAction(e -> toggleRegisterMode());
         }
     }
 
     @FXML
     private void handleLogin(ActionEvent event) {
+        if (isRegisterMode) {
+            handleRegister();
+        } else {
+            performLogin();
+        }
+    }
+
+    private void performLogin() {
         String email = emailField.getText().trim();
         String password = passwordField.getText();
 
-        // Vérifiez que les champs ne sont pas vides
         if (email.isEmpty() || password.isEmpty()) {
             showLoginError("Veuillez remplir tous les champs");
             return;
         }
 
-        // Récupérer l'utilisateur depuis la base de données
         User user = userDAO.findByEmail(email);
 
         if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-            // Connexion réussie
             hideLoginError();
             System.out.println("Connexion réussie pour: " + email);
 
-            // Rediriger vers la page principale
+            // Rediriger vers le dashboard
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/main/resources/org/example/laplateforme/view/MainMenuView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/laplateforme/view/dashboard.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(root));
-                stage.setTitle("La Plateforme Tracker - Menu Principal");
+                stage.setTitle("La Plateforme Tracker - Dashboard");
 
             } catch (IOException e) {
                 System.err.println("Erreur lors de la redirection: " + e.getMessage());
@@ -84,13 +107,24 @@ public class AuthController {
         }
     }
 
-    // NOUVELLES MÉTHODES UTILITAIRES POUR LA CONNEXION
+    private void toggleRegisterMode() {
+        isRegisterMode = !isRegisterMode;
+        if (isRegisterMode) {
+            loginButton.setText("S'inscrire");
+            registerLink.setText("Se connecter");
+            hideLoginError();
+        } else {
+            loginButton.setText("Se connecter");
+            registerLink.setText("S'inscrire");
+            hideLoginError();
+        }
+    }
+
     private void showLoginError(String message) {
         if (errorMessage != null) {
             errorMessage.setText(message);
             errorMessage.setVisible(true);
         } else if (errorLabel != null) {
-            // Fallback si errorMessage n'existe pas
             errorLabel.setText(message);
             errorLabel.setStyle("-fx-text-fill: red;");
         }
@@ -112,41 +146,36 @@ public class AuthController {
         }
 
         if (userDAO.existsByEmail(email)) {
-            errorLabel.setText("Email already in use.");
-            errorLabel.setStyle("-fx-text-fill: red;");
+            showLoginError("Email déjà utilisé.");
             return;
         }
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-
         User user = new User(email, hashedPassword, "user");
 
         if (userDAO.save(user)) {
-            errorLabel.setText("Inscription réussie !");
-            errorLabel.setStyle("-fx-text-fill: green;");
+            showLoginError("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+            // Revenir au mode connexion
+            toggleRegisterMode();
             clearFields();
         } else {
-            errorLabel.setText("Erreur lors de l'inscription.");
-            errorLabel.setStyle("-fx-text-fill: red;");
+            showLoginError("Erreur lors de l'inscription.");
         }
     }
 
     private boolean validateInputs(String email, String password) {
         if (email.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Tous les champs sont obligatoires.");
-            errorLabel.setStyle("-fx-text-fill: red;");
+            showLoginError("Tous les champs sont obligatoires.");
             return false;
         }
 
         if (!isValidEmail(email)) {
-            errorLabel.setText("Email invalide.");
-            errorLabel.setStyle("-fx-text-fill: red;");
+            showLoginError("Email invalide.");
             return false;
         }
 
         if (!isStrongPassword(password)) {
-            errorLabel.setText("Mot de passe trop faible (min 10 caractères, majuscule, minuscule, chiffre, spécial).");
-            errorLabel.setStyle("-fx-text-fill: red;");
+            showLoginError("Mot de passe trop faible (min 10 caractères, majuscule, minuscule, chiffre, spécial).");
             return false;
         }
 
@@ -169,12 +198,12 @@ public class AuthController {
 
     private void goBackToMainMenu() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/src/main/resources/org/example/laplateforme/view/MainMenuView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/laplateforme/view/dashboard.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("La Plateforme Tracker - Menu Principal");
+            stage.setTitle("La Plateforme Tracker - Dashboard");
 
         } catch (IOException e) {
             System.err.println("Erreur lors du retour au menu principal: " + e.getMessage());

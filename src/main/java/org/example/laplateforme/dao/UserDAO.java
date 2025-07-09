@@ -40,8 +40,7 @@ public class UserDAO {
         }
 
         String selectSql = """
-            SELECT id, email, password_hash, role,
-                created_at, last_login, is_active
+            SELECT id, email, password_hash, role
             FROM Users 
             WHERE email = ?
             """;
@@ -179,9 +178,9 @@ public class UserDAO {
         }
 
         String selectSql = """
-            SELECT id, email, role, created_at, last_login, is_active
+            SELECT id, email, role
             FROM Users 
-            ORDER BY created_at DESC
+            ORDER BY email DESC
             """;
 
         try {

@@ -72,12 +72,13 @@ public class Database {
             return false;
         }
 
+        // CORRECTION: Suppression de la virgule après 'USER'
         String createTableSql = """
             CREATE TABLE IF NOT EXISTS Users (
                 id SERIAL PRIMARY KEY,
                 email VARCHAR(100) UNIQUE NOT NULL,
                 password_hash TEXT NOT NULL,
-                role VARCHAR(20) DEFAULT 'USER',
+                role VARCHAR(20) DEFAULT 'USER'
             );
             """;
 
@@ -91,7 +92,4 @@ public class Database {
             return false;
         }
     }
-
 }
-
-

@@ -8,15 +8,19 @@
             fx:controller="org.example.laplateforme.controller.DashboardController">
 
     <top>
-        <VBox spacing="10" padding="10">
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
             <Label text="Student Dashboard" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
 
             <!-- Filters -->
-            <HBox spacing="10">
-                <TextField fx:id="filterFirstName" promptText="Filter by first name..." />
-                <TextField fx:id="filterLastName" promptText="Filter by last name..." />
-                <TextField fx:id="filterAge" promptText="Filter by age..." />
-                <TextField fx:id="filterGrade" promptText="Filter by grade..." />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="filterFirstName" promptText="Filter by first name..." prefWidth="150"/>
+                <TextField fx:id="filterLastName" promptText="Filter by last name..." prefWidth="150"/>
+                <TextField fx:id="filterAge" promptText="Filter by age..." prefWidth="100"/>
+                <TextField fx:id="filterGrade" promptText="Filter by grade..." prefWidth="120"/>
+                <Button text="Clear Filters" onAction="#clearFilters" style="-fx-background-color: #f0f0f0;"/>
             </HBox>
         </VBox>
     </top>
@@ -24,18 +28,35 @@
     <center>
         <TableView fx:id="studentTable">
             <columns>
-                <TableColumn fx:id="nameColumn" text="First Name" prefWidth="120"/>
-                <TableColumn fx:id="surnameColumn" text="Last Name" prefWidth="120"/>
+                <TableColumn fx:id="nameColumn" text="First Name" prefWidth="150"/>
+                <TableColumn fx:id="surnameColumn" text="Last Name" prefWidth="150"/>
                 <TableColumn fx:id="ageColumn" text="Age" prefWidth="80"/>
-                <TableColumn fx:id="gradeColumn" text="Grade" prefWidth="100"/>
+                <TableColumn fx:id="gradeColumn" text="Grade" prefWidth="120"/>
             </columns>
+            <contextMenu>
+                <ContextMenu>
+                    <items>
+                        <MenuItem text="Edit" onAction="#onEditStudent"/>
+                        <MenuItem text="Delete" onAction="#onDeleteStudent"/>
+                    </items>
+                </ContextMenu>
+            </contextMenu>
         </TableView>
     </center>
 
     <bottom>
-        <HBox spacing="10" alignment="center" padding="10">
-            <Button fx:id="addStudentButton" text="➕ Add Student" />
-            <Button fx:id="editStudentButton" text="✏️ Edit Student" />
+        <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button fx:id="addStudentButton" text="➕ Add Student" onAction="#onAddStudent"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+            <Button fx:id="editStudentButton" text="✏️ Edit Student" onAction="#onEditStudent"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            <Button text="🗑️ Delete Student" onAction="#onDeleteStudent"
+                    style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+            <Button text="🔄 Refresh" onAction="#refreshTable"
+                    style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
         </HBox>
     </bottom>
 </BorderPane>
