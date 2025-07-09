@@ -20,26 +20,19 @@ import java.util.regex.Pattern;
 
 public class AuthController {
 
-    @FXML
-    private TextField emailField;
+    @FXML private TextField emailField;
 
-    @FXML
-    private PasswordField passwordField;
+    @FXML private PasswordField passwordField;
 
-    @FXML
-    private Label errorLabel;
+    @FXML private Label errorLabel;
 
-    @FXML
-    private Label errorMessage;
+    @FXML private Label errorMessage;
 
-    @FXML
-    private Button backButton;
+    @FXML private Button backButton;
 
-    @FXML
-    private Button loginButton;
+    @FXML private Button loginButton;
 
-    @FXML
-    private Hyperlink registerLink;
+    @FXML private Hyperlink registerLink;
 
     private final UserDAO userDAO = new UserDAO();
     private final Database database = new Database();

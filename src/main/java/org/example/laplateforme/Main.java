@@ -11,7 +11,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         // Chargement du FXML
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/laplateforme/view/auth.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+        Scene scene = new Scene(fxmlLoader.load(), 500, 600);
+        scene.getStylesheets().add(getClass().getResource("/org/example/laplateforme/view/auth-styles.css").toExternalForm());
         stage.setTitle("LaPlateforme - Login");
         stage.setScene(scene);
         stage.show();

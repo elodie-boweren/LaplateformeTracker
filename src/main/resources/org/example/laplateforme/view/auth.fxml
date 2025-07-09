@@ -52,7 +52,8 @@
             </VBox>
 
             <!-- Error message -->
-            <Label fx:id="errorMessage" styleClass="error-message" visible="false" />
+            <Label fx:id="errorMessage" styleClass="error-message" visible="false"
+                   wrapText="true" maxWidth="Infinity" />
 
         </VBox>
     </center>

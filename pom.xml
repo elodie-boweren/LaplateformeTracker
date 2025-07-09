@@ -127,6 +127,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.fxml</include>
+                    <include>**/*.css</include>
                     <include>**/*.properties</include>
                     <include>**/*.png</include> <!-- ou autres fichiers à inclure -->
                 </includes>
