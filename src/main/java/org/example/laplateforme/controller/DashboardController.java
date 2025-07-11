@@ -7,15 +7,15 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TextField;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.event.ActionEvent;
-
+import javafx.scene.control.TextField;
 import org.example.laplateforme.dao.StudentDAO;
 import org.example.laplateforme.model.Student;
 
@@ -25,116 +25,39 @@ import java.util.Optional;
 
 public class DashboardController {
 
-    @FXML
-    private TableView<Student> studentTable;
+    @FXML private TableView<Student> studentTable;
+    @FXML private TableColumn<Student, String> nameColumn;
+    @FXML private TableColumn<Student, String> surnameColumn;
+    @FXML private TableColumn<Student, Integer> ageColumn;
+    @FXML private TableColumn<Student, String> gradeColumn;
+    @FXML private TextField filterFirstName;
+    @FXML private TextField filterLastName;
+    @FXML private TextField filterAge;
+    @FXML private TextField filterGrade;
+    @FXML private Button logoutButton;
+
+    private final StudentDAO studentDAO = new StudentDAO();
+    private ObservableList<Student> studentList = FXCollections.observableArrayList();
 
     @FXML
-    private TableColumn<Student, String> nameColumn;
+    private void handleLogout(ActionEvent event) {
+        try {
+            // Charger la vue de connexion
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/laplateforme/view/login.fxml"));
+            Parent root = loader.load();
 
-    @FXML
-    private TableColumn<Student, String> surnameColumn;
-
-    @FXML
-    private TableColumn<Student, Integer> ageColumn;
-
-    @FXML
-    private TableColumn<Student, String> gradeColumn;
-
-    @FXML
-    private TextField filterFirstName;
-
-    @FXML
-    private TextField filterLastName;
-
-    @FXML
-    private TextField filterAge;
-
-    @FXML
-    private TextField filterGrade;
-
-    @FXML
-    private Button addStudentButton;
-
-    @FXML
-    private Button editStudentButton;
-
-    private StudentDAO studentDAO;
-    private ObservableList<Student> studentList;
-    private FilteredList<Student> filteredStudents;
-
-    @FXML
-    public void initialize() {
-        studentDAO = new StudentDAO();
-        studentList = FXCollections.observableArrayList();
-        filteredStudents = new FilteredList<>(studentList);
-
-        // Configuration des colonnes
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        surnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
-        gradeColumn.setCellValueFactory(new PropertyValueFactory<>("grade"));
-
-        // Liaison de la liste filtrée à la table
-        studentTable.setItems(filteredStudents);
-
-        // Configuration des filtres
-        setupFilters();
-
-        // Charger les données
-        refreshTable();
+            // Obtenir la scène actuelle et la remplacer
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void setupFilters() {
-        // Écouter les changements dans les champs de filtre
-        filterFirstName.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
-        filterLastName.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
-        filterAge.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
-        filterGrade.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
-    }
-
-    private void applyFilters() {
-        filteredStudents.setPredicate(student -> {
-            if (student == null) return false;
-
-            // Filtre par prénom
-            String firstNameFilter = filterFirstName.getText();
-            if (firstNameFilter != null && !firstNameFilter.isEmpty()) {
-                if (!student.getFirstName().toLowerCase().contains(firstNameFilter.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            // Filtre par nom
-            String lastNameFilter = filterLastName.getText();
-            if (lastNameFilter != null && !lastNameFilter.isEmpty()) {
-                if (!student.getLastName().toLowerCase().contains(lastNameFilter.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            // Filtre par âge
-            String ageFilter = filterAge.getText();
-            if (ageFilter != null && !ageFilter.isEmpty()) {
-                try {
-                    int age = Integer.parseInt(ageFilter);
-                    if (student.getAge() != age) {
-                        return false;
-                    }
-                } catch (NumberFormatException e) {
-                    // Ignorer si ce n'est pas un nombre valide
-                }
-            }
-
-            // Filtre par grade
-            String gradeFilter = filterGrade.getText();
-            if (gradeFilter != null && !gradeFilter.isEmpty()) {
-                if (!student.getGrade().toLowerCase().contains(gradeFilter.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
+    @FXML
+    private void initialize() {
+        setupTableColumns();
+        loadStudentData();
     }
 
     @FXML
@@ -143,88 +66,126 @@ public class DashboardController {
         filterLastName.clear();
         filterAge.clear();
         filterGrade.clear();
+
+    private void setupTableColumns() {
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        surnameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        gradeColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(String.valueOf(cellData.getValue().getGrade())));
     }
 
-    @FXML
-    private void refreshTable() {
-        List<Student> students = studentDAO.getAllStudents();
+    private void loadStudentData() {
         studentList.clear();
+        List<Student> students = studentDAO.getAllStudents();
         studentList.addAll(students);
+        studentTable.setItems(studentList);
     }
 
     @FXML
     private void onAddStudent() {
-        showStudentDialog(null);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/student-form.fxml"));
+            Parent root = loader.load();
+
+            StudentFormController controller = loader.getController();
+            controller.setDashboardController(this);
+
+            Stage stage = new Stage();
+            stage.setTitle("Add New Student");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not open student form");
+        }
     }
 
     @FXML
     private void onEditStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        if (selectedStudent != null) {
-            showStudentDialog(selectedStudent);
-        } else {
-            showAlert("Aucune sélection", "Veuillez sélectionner un étudiant à modifier.");
+        if (selectedStudent == null) {
+            showAlert("No Selection", "Please select a student to edit");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/student-form.fxml"));
+            Parent root = loader.load();
+
+            StudentFormController controller = loader.getController();
+            controller.setDashboardController(this);
+            controller.setStudentData(selectedStudent);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Student");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not open student form");
         }
     }
 
     @FXML
     private void onDeleteStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        if (selectedStudent != null) {
-            Optional<ButtonType> result = showConfirmationDialog(
-                    "Confirmer la suppression",
-                    "Êtes-vous sûr de vouloir supprimer cet étudiant ?",
-                    selectedStudent.getFirstName() + " " + selectedStudent.getLastName()
-            );
+        if (selectedStudent == null) {
+            showAlert("No Selection", "Please select a student to delete");
+            return;
+        }
 
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                studentDAO.deleteStudent(selectedStudent.getId());
-                refreshTable();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Student");
+        alert.setHeaderText("Delete Student: " + selectedStudent.getFirstName() + " " + selectedStudent.getLastName());
+        alert.setContentText("Are you sure you want to delete this student?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (studentDAO.deleteStudent(selectedStudent.getId())) {
+                loadStudentData();
+            } else {
+                showAlert("Error", "Failed to delete student");
             }
-        } else {
-            showAlert("Aucune sélection", "Veuillez sélectionner un étudiant à supprimer.");
         }
     }
 
-    private void showStudentDialog(Student student) {
+    @FXML
+    private void refreshTable() {
+        loadStudentData();
+    }
+
+    @FXML
+    private void onLogout() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/laplateforme/view/student-form.fxml"));
+            // Fermer la fenêtre actuelle
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.close();
+
+            // Ouvrir la fenêtre de connexion
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/auth.fxml"));
             Parent root = loader.load();
-
-            StudentFormController controller = loader.getController();
-            controller.setStudent(student);
-            controller.setDashboardController(this);
-
-            Stage stage = new Stage();
-            stage.setTitle(student == null ? "Ajouter un étudiant" : "Modifier un étudiant");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Login");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
         } catch (IOException e) {
-            System.err.println("Erreur lors de l'ouverture du formulaire: " + e.getMessage());
-            showAlert("Erreur", "Impossible d'ouvrir le formulaire d'étudiant.");
+            e.printStackTrace();
+            showAlert("Error", "Could not open login window");
         }
+    }
+
+    public void refreshStudentList() {
+        loadStudentData();
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private Optional<ButtonType> showConfirmationDialog(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        return alert.showAndWait();
-    }
-
-    // Méthode appelée par le formulaire d'étudiant pour rafraîchir la table
-    public void onStudentSaved() {
-        refreshTable();
     }
 }

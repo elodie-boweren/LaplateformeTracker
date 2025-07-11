@@ -4,7 +4,6 @@ import org.example.laplateforme.dao.UserDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
-import org.example.laplateforme.dao.Database;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,45 +13,41 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
 import org.example.laplateforme.model.User;
-import org.mindrot.jbcrypt.BCrypt;
+import org.example.laplateforme.dao.Database;
+
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class AuthController {
 
     @FXML private TextField emailField;
-
     @FXML private PasswordField passwordField;
-
     @FXML private Label errorLabel;
-
     @FXML private Label errorMessage;
-
     @FXML private Button backButton;
-
     @FXML private Button loginButton;
-
     @FXML private Hyperlink registerLink;
 
     private final UserDAO userDAO = new UserDAO();
-    private final Database database = new Database();
+    private final Database database = Database.getInstance();
 
-    // Variable pour gérer le mode (login ou register)
     private boolean isRegisterMode = false;
 
     @FXML
     public void initialize() {
-        // Initialiser la base de données et créer les tables
-        if (database.connectDb()) {
-            database.createUserTable();
-            database.createStudentTable();
+        // Vérification de la connexion à la base de données
+        if (!database.isConnected()) {
+            boolean connected = database.connectDb();
+            if (!connected) {
+                showLoginError("Impossible de se connecter à la base de données");
+            }
         }
 
+        // Configuration des handlers
         if (backButton != null) {
             backButton.setOnAction(e -> goBackToMainMenu());
         }
 
-        // Gérer le lien d'inscription
         if (registerLink != null) {
             registerLink.setOnAction(e -> toggleRegisterMode());
         }
@@ -76,13 +71,8 @@ public class AuthController {
             return;
         }
 
-        User user = userDAO.findByEmail(email);
-
-        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-            hideLoginError();
-            System.out.println("Connexion réussie pour: " + email);
-
-            // Rediriger vers le dashboard
+        // Utilisation de la méthode authenticate de UserDAO
+        if (userDAO.authenticate(email, password)) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/laplateforme/view/dashboard.fxml"));
                 Parent root = loader.load();
@@ -90,7 +80,6 @@ public class AuthController {
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.setTitle("La Plateforme Tracker - Dashboard");
-
             } catch (IOException e) {
                 System.err.println("Erreur lors de la redirection: " + e.getMessage());
                 showLoginError("Erreur lors de la connexion");
@@ -138,17 +127,16 @@ public class AuthController {
             return;
         }
 
-        if (userDAO.existsByEmail(email)) {
+        if (userDAO.userExists(email)) {
             showLoginError("Email déjà utilisé.");
             return;
         }
 
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        User user = new User(email, hashedPassword, "user");
+        // Le hashage est maintenant géré dans UserDAO
+        User user = new User(email, password, "user");
 
-        if (userDAO.save(user)) {
+        if (userDAO.addUser(user)) {
             showLoginError("Inscription réussie ! Vous pouvez maintenant vous connecter.");
-            // Revenir au mode connexion
             toggleRegisterMode();
             clearFields();
         } else {
@@ -197,7 +185,6 @@ public class AuthController {
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("La Plateforme Tracker - Dashboard");
-
         } catch (IOException e) {
             System.err.println("Erreur lors du retour au menu principal: " + e.getMessage());
             e.printStackTrace();

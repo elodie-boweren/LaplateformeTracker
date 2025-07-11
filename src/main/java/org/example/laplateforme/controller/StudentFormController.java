@@ -1,90 +1,76 @@
 package org.example.laplateforme.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.scene.control.*;
 import org.example.laplateforme.dao.StudentDAO;
 import org.example.laplateforme.model.Student;
 
 public class StudentFormController {
 
-    @FXML
-    private TextField firstNameField;
+    @FXML private TextField firstNameField;
+    @FXML private TextField lastNameField;
+    @FXML private TextField ageField;
+    @FXML private TextField gradeField;
+    @FXML private Label errorLabel;
 
-    @FXML
-    private TextField lastNameField;
-
-    @FXML
-    private TextField ageField;
-
-    @FXML
-    private TextField gradeField;
-
-    @FXML
-    private Label errorLabel;
-
-    @FXML
-    private Button saveButton;
-
-    @FXML
-    private Button cancelButton;
-
-    private Student currentStudent;
-    private StudentDAO studentDAO;
     private DashboardController dashboardController;
+    private Student currentStudent;
+    private final StudentDAO studentDAO = new StudentDAO();
 
     @FXML
-    public void initialize() {
-        studentDAO = new StudentDAO();
+    private void initialize() {
+        // Initialisation si nécessaire
     }
 
-    public void setStudent(Student student) {
+    public void setDashboardController(DashboardController controller) {
+        this.dashboardController = controller;
+    }
+
+    public void setStudentData(Student student) {
         this.currentStudent = student;
         if (student != null) {
-            // Mode édition
             firstNameField.setText(student.getFirstName());
             lastNameField.setText(student.getLastName());
             ageField.setText(String.valueOf(student.getAge()));
-            gradeField.setText(student.getGrade());
+            gradeField.setText(String.valueOf(student.getGrade()));
         }
-        // Sinon c'est le mode création, les champs restent vides
-    }
-
-    public void setDashboardController(DashboardController dashboardController) {
-        this.dashboardController = dashboardController;
     }
 
     @FXML
     private void onSave() {
-        if (validateInputs()) {
+        if (!validateInputs()) {
+            return;
+        }
+
+        try {
             String firstName = firstNameField.getText().trim();
             String lastName = lastNameField.getText().trim();
             int age = Integer.parseInt(ageField.getText().trim());
-            String grade = gradeField.getText().trim();
+            int grade = Integer.parseInt(gradeField.getText().trim());
 
-            if (currentStudent == null) {
-                // Mode création
-                Student newStudent = new Student(0, firstName, lastName, age, grade);
-                studentDAO.addStudent(newStudent);
-                System.out.println("Étudiant ajouté avec succès");
+            Student student = new Student(firstName, lastName, age, grade);
+
+            if (currentStudent != null) {
+                student.setId(currentStudent.getId());
+                if (studentDAO.updateStudent(student)) {
+                    dashboardController.refreshStudentList();
+                    closeWindow();
+                } else {
+                    showError("Failed to update student");
+                }
             } else {
-                // Mode édition
-                currentStudent.setFirstName(firstName);
-                currentStudent.setLastName(lastName);
-                currentStudent.setAge(age);
-                currentStudent.setGrade(grade);
-                studentDAO.updateStudent(currentStudent);
-                System.out.println("Étudiant modifié avec succès");
+                if (studentDAO.addStudent(student)) {
+                    dashboardController.refreshStudentList();
+                    closeWindow();
+                } else {
+                    showError("Failed to add student");
+                }
             }
-
-            // Notifier le dashboard pour rafraîchir la table
-            if (dashboardController != null) {
-                dashboardController.onStudentSaved();
-            }
-
-            closeWindow();
+        } catch (NumberFormatException e) {
+            showError("Please enter valid numbers for age and grade");
+        } catch (Exception e) {
+            showError("An unexpected error occurred");
+            e.printStackTrace();
         }
     }
 
@@ -94,28 +80,22 @@ public class StudentFormController {
     }
 
     private boolean validateInputs() {
-        // Réinitialiser le message d'erreur
-        errorLabel.setVisible(false);
+        hideError();
 
-        // Vérifier que tous les champs sont remplis
         if (firstNameField.getText().trim().isEmpty() ||
                 lastNameField.getText().trim().isEmpty() ||
                 ageField.getText().trim().isEmpty() ||
                 gradeField.getText().trim().isEmpty()) {
 
-            showError("Tous les champs sont obligatoires.");
+            showError("All fields are required");
             return false;
         }
 
-        // Vérifier que l'âge est un nombre valide
         try {
-            int age = Integer.parseInt(ageField.getText().trim());
-            if (age < 0 || age > 150) {
-                showError("L'âge doit être compris entre 0 et 150.");
-                return false;
-            }
+            Integer.parseInt(ageField.getText().trim());
+            Integer.parseInt(gradeField.getText().trim());
         } catch (NumberFormatException e) {
-            showError("L'âge doit être un nombre valide.");
+            showError("Age and grade must be valid numbers");
             return false;
         }
 
@@ -127,8 +107,11 @@ public class StudentFormController {
         errorLabel.setVisible(true);
     }
 
+    private void hideError() {
+        errorLabel.setVisible(false);
+    }
+
     private void closeWindow() {
-        Stage stage = (Stage) saveButton.getScene().getWindow();
-        stage.close();
+        firstNameField.getScene().getWindow().hide();
     }
 }

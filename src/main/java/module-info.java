@@ -13,4 +13,6 @@ module org.example.laplateforme {
     exports org.example.laplateforme.controller;
     exports org.example.laplateforme.dao;
     exports org.example.laplateforme.model;
+    exports org.example.laplateforme.service;
+    opens org.example.laplateforme.service to javafx.base;
 }

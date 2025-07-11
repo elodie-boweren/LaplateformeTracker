@@ -8,6 +8,14 @@
             fx:controller="org.example.laplateforme.controller.DashboardController">
 
     <top>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button text="Logout" onAction="#handleLogout"
+                    style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+        </HBox>
+
         <VBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
@@ -51,10 +59,6 @@
             </padding>
             <Button fx:id="addStudentButton" text="➕ Add Student" onAction="#onAddStudent"
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-            <Button fx:id="editStudentButton" text="✏️ Edit Student" onAction="#onEditStudent"
-                    style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-            <Button text="🗑️ Delete Student" onAction="#onDeleteStudent"
-                    style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
             <Button text="🔄 Refresh" onAction="#refreshTable"
                     style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
         </HBox>
