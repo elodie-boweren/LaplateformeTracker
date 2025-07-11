@@ -5,20 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad68089c-801f-4fd4-901b-0ee4d76201c4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/utils/ExcelExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/laplateforme/view/auth.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/example/laplateforme/view/auth.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/controller/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/laplateforme/view/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/example/laplateforme/view/dashboard.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "laura-iriskinian"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/elodie-boweren/LaplateformeTracker.git",
+    "accountId": "960437c8-a696-45a2-8b2b-b119b48c5693"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -26,10 +45,10 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 4
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2zdZR5CkjiRa6qU0aJ9FX9rds02" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -37,10 +56,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "View",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/elodi/OneDrive/Desktop/Projets_plateforme/LOGICIEL/JAVA/PlateformeTracker/LaplateformeTracker/pom.xml",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",

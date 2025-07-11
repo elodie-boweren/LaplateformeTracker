@@ -57,6 +57,9 @@
                     style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
             <Button text="🔄 Refresh" onAction="#refreshTable"
                     style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+            <Button text="📤 Export to Excel" onAction="#onExportToExcel"
+                    style="-fx-background-color: #9C27B0; -fx-text-fill: white;"/>
+
         </HBox>
     </bottom>
 </BorderPane>

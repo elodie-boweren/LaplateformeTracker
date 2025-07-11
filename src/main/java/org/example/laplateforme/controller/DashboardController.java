@@ -23,6 +23,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import javafx.stage.FileChooser;
+import org.example.laplateforme.model.Student;
+import org.example.laplateforme.utils.ExcelExporter;
+
+import java.io.File;
+import java.util.List;
+
+
 public class DashboardController {
 
     @FXML
@@ -226,5 +234,18 @@ public class DashboardController {
     // Méthode appelée par le formulaire d'étudiant pour rafraîchir la table
     public void onStudentSaved() {
         refreshTable();
+    }
+
+    public void onExportToExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exporter vers un fichier Excel");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier Excel", "*.xlsx"));
+        fileChooser.setInitialFileName("etudiants.xlsx");
+
+        File file = fileChooser.showSaveDialog(studentTable.getScene().getWindow());
+        if (file != null) {
+            List<Student> students = studentTable.getItems(); // récupère la liste affichée
+            ExcelExporter.exportStudentsToExcel(students, file);
+        }
     }
 }

@@ -3,6 +3,8 @@ module org.example.laplateforme {
     requires javafx.fxml;
     requires java.sql;
     requires jBCrypt;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
 
     opens org.example.laplateforme to javafx.fxml;
     opens org.example.laplateforme.controller to javafx.fxml;
