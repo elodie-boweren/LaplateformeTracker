@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad68089c-801f-4fd4-901b-0ee4d76201c4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/utils/ExcelExporter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/dao/DBConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/controller/DashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/laplateforme/view/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/example/laplateforme/view/dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/dao/StudentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/laplateforme/dao/StudentDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,18 +24,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "laura-iriskinian"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;laura-iriskinian&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/elodie-boweren/LaplateformeTracker.git",
-    "accountId": "960437c8-a696-45a2-8b2b-b119b48c5693"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/elodie-boweren/LaplateformeTracker.git&quot;,
+    &quot;accountId&quot;: &quot;960437c8-a696-45a2-8b2b-b119b48c5693&quot;
   }
-}]]></component>
+}</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -59,6 +57,7 @@
     "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/elodi/OneDrive/Desktop/Projets_plateforme/LOGICIEL/JAVA/PlateformeTracker/LaplateformeTracker/pom.xml",
@@ -71,6 +70,11 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.40344828",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -89,6 +93,7 @@
       <option name="presentableId" value="Default" />
       <updated>1752062901347</updated>
       <workItem from="1752062905113" duration="332000" />
+      <workItem from="1752216979009" duration="1164000" />
     </task>
     <servers />
   </component>

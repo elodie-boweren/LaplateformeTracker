@@ -1,4 +1,5 @@
 package org.example.laplateforme.dao;
+
 import org.example.laplateforme.model.Student;
 
 import java.sql.*;
@@ -6,63 +7,80 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDAO {
-    private Database database;
 
-    public StudentDAO() {
-        this.database = new Database();
-        this.database.connectDb(); // Connexion à la base
-    }
-
-    //Ajouter un étudiant
+    // Ajouter un étudiant
     public void addStudent(Student student) {
         String sql = "INSERT INTO Student (firstName, lastName, age, grade) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = database.getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, student.getFirstName());
             stmt.setString(2, student.getLastName());
             stmt.setInt(3, student.getAge());
-            stmt.setString(4, student.getGrade());
+            stmt.setInt(4, Integer.parseInt(student.getGrade()));
 
             stmt.executeUpdate();
-            System.out.println("Student added successfully");
+            System.out.println("✅ Étudiant ajouté.");
         } catch (SQLException e) {
-            System.err.println("Error adding student: " + e.getMessage());
+            System.err.println("❌ Erreur ajout étudiant : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Mettre à jour un étudiant
+    // Modifier un étudiant
     public void updateStudent(Student student) {
         String sql = "UPDATE Student SET firstName = ?, lastName = ?, age = ?, grade = ? WHERE id = ?";
 
-        try (Connection conn = database.getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, student.getFirstName());
             stmt.setString(2, student.getLastName());
             stmt.setInt(3, student.getAge());
-            stmt.setString(4, student.getGrade());
+            stmt.setInt(4, Integer.parseInt(student.getGrade()));
             stmt.setInt(5, student.getId());
 
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
                 System.out.println("✅ Étudiant mis à jour.");
             } else {
                 System.out.println("⚠️ Aucun étudiant trouvé avec cet ID.");
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Erreur lors de la mise à jour: " + e.getMessage());
+            System.err.println("❌ Erreur mise à jour : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Rechercher un étudiant par ID
+    // Supprimer un étudiant
+    public void deleteStudent(int id) {
+        String sql = "DELETE FROM Student WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("✅ Étudiant supprimé.");
+            } else {
+                System.out.println("⚠️ Étudiant introuvable.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur suppression : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Récupérer un étudiant par ID
     public Student getStudentById(int id) {
         String sql = "SELECT * FROM Student WHERE id = ?";
-        try (Connection conn = database.getConnection();
+
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
@@ -74,65 +92,42 @@ public class StudentDAO {
                         rs.getString("firstName"),
                         rs.getString("lastName"),
                         rs.getInt("age"),
-                        rs.getString("grade")
+                        String.valueOf(rs.getInt("grade"))
                 );
             }
 
         } catch (SQLException e) {
-            System.err.println("❌ Erreur lors de la récupération: " + e.getMessage());
+            System.err.println("❌ Erreur récupération ID : " + e.getMessage());
             e.printStackTrace();
         }
 
         return null;
     }
 
-    // Afficher tous les étudiants
+    // Récupérer tous les étudiants
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
         String sql = "SELECT * FROM Student ORDER BY id";
 
-        try (Connection conn = database.getConnection();
+        try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Student s = new Student(
+                students.add(new Student(
                         rs.getInt("id"),
                         rs.getString("firstName"),
                         rs.getString("lastName"),
                         rs.getInt("age"),
-                        rs.getString("grade")
-                );
-                students.add(s);
+                        String.valueOf(rs.getInt("grade"))
+                ));
             }
 
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'affichage: " + e.getMessage());
+            System.err.println("❌ Erreur récupération liste : " + e.getMessage());
             e.printStackTrace();
         }
 
         return students;
-    }
-
-    // Supprimer un étudiant
-    public void deleteStudent(int id) {
-        String sql = "DELETE FROM Student WHERE id = ?";
-
-        try (Connection conn = database.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-
-            int rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("✅ Étudiant supprimé.");
-            } else {
-                System.out.println("⚠️ Aucun étudiant trouvé avec cet ID.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("❌ Erreur lors de la suppression: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }
